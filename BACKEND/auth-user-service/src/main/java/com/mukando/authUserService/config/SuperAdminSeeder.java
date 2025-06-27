@@ -29,11 +29,11 @@ public class SuperAdminSeeder {
                         .phone("+263772707153")
                         .firstName("Tinashe")
                         .lastName("Mutero")
-                        .password(passwordEncoder.encode("tina123")) // 🔐 Change in production
+                        .password(passwordEncoder.encode("tina123"))
                         .roles(Set.of(Role.SUPER_ADMIN))
                         .build();
                 userRepository.save(user);
-                System.out.println("✅ SUPER_ADMIN seeded: " + user.getUsername());
+                System.out.println("✅ SUPER_ADMIN seeded: " + user.getFirstName() + " " + user.getLastName());
             }
         };
     }

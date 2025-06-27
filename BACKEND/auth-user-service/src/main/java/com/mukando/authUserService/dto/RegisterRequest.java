@@ -2,6 +2,7 @@ package com.mukando.authUserService.dto;
 
 import java.util.Set;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,9 @@ import lombok.Setter;
 @Builder
 public class RegisterRequest {
     private String username;
+    @NotBlank(message = "First name is required")
     private String firstName;
+    @NotBlank(message = "Last name is required")
     private String lastName;
     private String email;
     private String phone;

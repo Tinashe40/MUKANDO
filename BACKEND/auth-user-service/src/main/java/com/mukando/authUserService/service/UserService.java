@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.mukando.authUserService.entity.Role;
 import com.mukando.authUserService.entity.User;
+import com.mukando.authUserService.exceptions.InvalidRoleOperationException;
+import com.mukando.authUserService.exceptions.UserNotFoundException;
 import com.mukando.authUserService.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
@@ -25,25 +27,48 @@ public class UserService {
 
     public User getById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found with id: " + id));
+    }
+    
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserNotFoundException("User not found: " + username));
     }
 
     @Transactional
-    public void promoteUser(Long id, Role newRole) {
+    public User promoteUser(Long id, Role newRole) {
         User user = getById(id);
+        
+        
+        if (user.getRoles().contains(newRole)) {
+            throw new InvalidRoleOperationException("User already has role: " + newRole);
+        }
+        
         user.getRoles().add(newRole);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional
-    public void demoteUser(Long id, Role roleToRemove) {
+    public User demoteUser(Long id, Role roleToRemove) {
         User user = getById(id);
+        
+        if (!user.getRoles().contains(roleToRemove)) {
+            throw new InvalidRoleOperationException("User does not have role: " + roleToRemove);
+        }
+        
+        if (user.getRoles().size() == 1) {
+            throw new InvalidRoleOperationException("Cannot remove user's last role");
+        }
+        
         user.getRoles().remove(roleToRemove);
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
     @Transactional
     public void deleteUser(Long id) {
+        if (!userRepository.existsById(id)) {
+            throw new UserNotFoundException("User not found with id: " + id);
+        }
         userRepository.deleteById(id);
     }
 
