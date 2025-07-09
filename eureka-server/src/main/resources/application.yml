@@ -2,6 +2,9 @@ server:
   port: 8761
 
 spring:
+  cloud:
+    inetutils:
+      prefer-ip-address: true
   application:
     name: eureka-server
 
@@ -11,3 +14,4 @@ eureka:
     fetch-registry: false
   server:
     wait-time-in-ms-when-sync-empty: 0
+    
