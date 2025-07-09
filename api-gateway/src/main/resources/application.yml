@@ -1,0 +1,76 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+
+  cloud:
+    gateway:
+      server:
+        webflux:
+          discovery:
+            locator:
+              enabled: true
+              lower-case-service-id: true
+
+      server:
+        webflux:
+          routes:
+            - id: user-service
+              uri: lb://USER-SERVICE
+              predicates:
+                - Path=/api/users/**
+
+            - id: project-service
+              uri: lb://project-service
+              predicates:
+                - Path=/projects/**
+
+            - id: task-service
+              uri: lb://task-service
+              predicates:
+                - Path=/tasks/**
+
+            - id: auth-service
+              uri: lb://auth-service
+              predicates:
+                - Path=/auth/**
+
+            - id: notification-service
+              uri: lb://notification-service
+              predicates:
+                - Path=/notifications/**
+            - id: group-service
+              uri: lb://group-service
+              predicates:
+                - Path=/groups/**
+
+            - id: contribution-service
+              uri: lb://contribution-service
+              predicates:
+                - Path=/contributions/**
+
+            - id: payment-service
+              uri: lb://payment-service
+              predicates:
+                - Path=/payments/**
+
+            - id: report-service
+              uri: lb://report-service
+              predicates:
+                - Path=/reports/**
+
+            - id: loan-service
+              uri: lb://loan-service
+              predicates:
+                - Path=/loans/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+jwt:
+  secret: MrDCKQyMSWR8Di/nYRXZPBLR+HCbCv+KvSCDu47px80=
+  expiration: 360000 
