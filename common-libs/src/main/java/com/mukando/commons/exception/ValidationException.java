@@ -1,4 +1,4 @@
-package com.mukando.apigateway.exception;
+package com.mukando.commons.exception;
 
 public class ValidationException extends RuntimeException {
     public ValidationException(String message) {

@@ -2,6 +2,7 @@ package com.mukando.authservice.security;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.Map;
 
 import javax.crypto.SecretKey;
 
@@ -25,6 +26,11 @@ public class JwtUtil {
 
     @Value("${jwt.refreshExpirationMs}")
     private long refreshTokenExpiration;
+public Map<String, String> generateTokenPair(User user) {
+    String accessToken = generateAccessToken(user);
+    String refreshToken = generateRefreshToken(user);
+    return Map.of("accessToken", accessToken, "refreshToken", refreshToken);
+}
 
     public String generateAccessToken(User user) {
         return Jwts.builder()

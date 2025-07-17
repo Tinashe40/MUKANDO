@@ -8,6 +8,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="api-gateway" />
         <module name="eureka-server" />
+        <module name="common-libs" />
       </profile>
       <profile name="Annotation profile for auth-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
@@ -19,11 +20,16 @@
         <module name="auth-service" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common-lib" target="1.5" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="api-gateway" options="-parameters" />
       <module name="auth-service" options="-parameters" />
+      <module name="common-lib" options="" />
+      <module name="common-libs" options="-parameters" />
       <module name="eureka-server" options="-parameters" />
     </option>
   </component>

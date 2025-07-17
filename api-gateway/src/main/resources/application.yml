@@ -14,23 +14,11 @@ spring:
               enabled: true
               lower-case-service-id: true
 
-      server:
-        webflux:
           routes:
             - id: user-service
               uri: lb://USER-SERVICE
               predicates:
                 - Path=/api/users/**
-
-            - id: project-service
-              uri: lb://project-service
-              predicates:
-                - Path=/projects/**
-
-            - id: task-service
-              uri: lb://task-service
-              predicates:
-                - Path=/tasks/**
 
             - id: auth-service
               uri: lb://auth-service

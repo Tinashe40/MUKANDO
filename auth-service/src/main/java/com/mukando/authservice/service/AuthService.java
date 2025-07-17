@@ -1,10 +1,15 @@
 package com.mukando.authservice.service;
 
-import java.util.Map;
-
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.mukando.authservice.dto.AuthResponse;
+import com.mukando.authservice.dto.MessageResponse;
+import com.mukando.authservice.dto.RegisterRequest;
+import com.mukando.authservice.exception.InvalidCredentialsException;
+import com.mukando.authservice.exception.RefreshTokenExpiredException;
+import com.mukando.authservice.exception.UserNotFoundException;
+import com.mukando.authservice.exception.UsernameAlreadyExistsException;
 import com.mukando.authservice.model.RefreshToken;
 import com.mukando.authservice.model.Role;
 import com.mukando.authservice.model.User;
@@ -24,43 +29,40 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public Map<String, String> login(String username, String password) {
+    public AuthResponse login(String username, String password) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
         String accessToken = jwtUtil.generateAccessToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken.getToken()
-        );
+        return new AuthResponse(accessToken, refreshToken.getToken());
     }
 
-    public String register(String username, String password, String roleStr) {
-        if (userRepository.existsByUsername(username)) {
-            throw new RuntimeException("Username already exists");
+    public MessageResponse register(RegisterRequest request) {
+        
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new UsernameAlreadyExistsException("Username already exists");
         }
 
-        Role role = Role.valueOf(roleStr.toUpperCase());
-
         User user = User.builder()
-                .username(username)
-                .password(passwordEncoder.encode(password))
-                .role(role)
+                .username(request.getUsername())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .email(request.getEmail())
+                .role(request.getRole() != null ? request.getRole() : Role.USER)
                 .build();
 
         userRepository.save(user);
-        return "User registered successfully";
+        return new MessageResponse("User registered successfully");
     }
 
-    public Map<String, String> refreshAccessToken(String refreshTokenStr) {
+    public AuthResponse refreshAccessToken(String refreshTokenStr) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenStr)
-                .orElseThrow(() -> new RuntimeException("Invalid refresh token"));
+                .orElseThrow(() -> new RefreshTokenExpiredException("Invalid refresh token"));
 
         refreshTokenService.verifyExpiration(refreshToken);
         User user = refreshToken.getUser();
@@ -68,17 +70,14 @@ public class AuthService {
         String newAccessToken = jwtUtil.generateAccessToken(user);
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
 
-        return Map.of(
-                "accessToken", newAccessToken,
-                "refreshToken", newRefreshToken.getToken()
-        );
+        return new AuthResponse(newAccessToken, newRefreshToken.getToken());
     }
 
-    public String logout(String username) {
+    public MessageResponse logout(String username) {
         User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         refreshTokenService.deleteByUser(user);
-        return "User logged out successfully";
+        return new MessageResponse("User logged out successfully");
     }
 }
