@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.mukando.authservice.dto.AuthResponse;
+import com.mukando.authservice.dto.LoginResponse;
 import com.mukando.authservice.dto.LoginRequest;
 import com.mukando.authservice.dto.LogoutRequest;
 import com.mukando.authservice.dto.MessageResponse;
@@ -37,8 +37,8 @@ public class AuthController {
 
     @PostMapping("/login")
     @Operation(summary = "Login and receive access and refresh tokens")
-    public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
-        AuthResponse tokens = authService.login(request.getUsername(), request.getPassword());
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request, HttpServletResponse response) {
+        LoginResponse tokens = authService.login(request.getUsername(), request.getPassword());
 
         Cookie cookie = new Cookie("refreshToken", tokens.getRefreshToken());
         cookie.setHttpOnly(true);
@@ -52,8 +52,8 @@ public class AuthController {
 
     @PostMapping("/refresh-token")
     @Operation(summary = "Refresh access token using refresh token")
-    public ResponseEntity<AuthResponse> refreshToken(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
-        AuthResponse tokens = authService.refreshAccessToken(refreshToken);
+    public ResponseEntity<LoginResponse> refreshToken(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
+        LoginResponse tokens = authService.refreshAccessToken(refreshToken);
 
         Cookie cookie = new Cookie("refreshToken", tokens.getRefreshToken());
         cookie.setHttpOnly(true);

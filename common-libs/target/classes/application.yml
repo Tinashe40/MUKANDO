@@ -1,0 +1,3 @@
+jwt:
+  secret: MrDCKQyMSWR8Di/nYRXZPBLR+HCbCv+KvSCDu47px80=
+  expiration: 3600000 # 1 hour

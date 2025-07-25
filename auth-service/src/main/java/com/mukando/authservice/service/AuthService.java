@@ -3,19 +3,19 @@ package com.mukando.authservice.service;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.mukando.authservice.dto.AuthResponse;
+import com.mukando.authservice.dto.LoginResponse;
 import com.mukando.authservice.dto.MessageResponse;
 import com.mukando.authservice.dto.RegisterRequest;
-import com.mukando.authservice.exception.InvalidCredentialsException;
-import com.mukando.authservice.exception.RefreshTokenExpiredException;
-import com.mukando.authservice.exception.UserNotFoundException;
-import com.mukando.authservice.exception.UsernameAlreadyExistsException;
 import com.mukando.authservice.model.RefreshToken;
 import com.mukando.authservice.model.Role;
 import com.mukando.authservice.model.User;
 import com.mukando.authservice.repository.RefreshTokenRepository;
 import com.mukando.authservice.repository.UserRepository;
 import com.mukando.authservice.security.JwtUtil;
+import com.mukando.commons.exception.InvalidCredentialsException;
+import com.mukando.commons.exception.RefreshTokenExpiredException;
+import com.mukando.commons.exception.UserNotFoundException;
+import com.mukando.commons.exception.UsernameAlreadyExistException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +29,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
 
-    public AuthResponse login(String username, String password) {
+    public LoginResponse login(String username, String password) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
 
@@ -40,13 +40,13 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
-        return new AuthResponse(accessToken, refreshToken.getToken());
+        return new LoginResponse(accessToken, refreshToken.getToken());
     }
 
     public MessageResponse register(RegisterRequest request) {
         
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new UsernameAlreadyExistsException("Username already exists");
+            throw new UsernameAlreadyExistException("Username already exists");
         }
 
         User user = User.builder()
@@ -60,7 +60,7 @@ public class AuthService {
         return new MessageResponse("User registered successfully");
     }
 
-    public AuthResponse refreshAccessToken(String refreshTokenStr) {
+    public LoginResponse refreshAccessToken(String refreshTokenStr) {
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenStr)
                 .orElseThrow(() -> new RefreshTokenExpiredException("Invalid refresh token"));
 
@@ -70,7 +70,7 @@ public class AuthService {
         String newAccessToken = jwtUtil.generateAccessToken(user);
         RefreshToken newRefreshToken = refreshTokenService.createRefreshToken(user);
 
-        return new AuthResponse(newAccessToken, newRefreshToken.getToken());
+        return new LoginResponse(newAccessToken, newRefreshToken.getToken());
     }
 
     public MessageResponse logout(String username) {

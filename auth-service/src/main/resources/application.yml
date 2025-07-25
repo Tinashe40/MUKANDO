@@ -22,5 +22,6 @@ eureka:
 
 jwt:
   secret: MrDCKQyMSWR8Di/nYRXZPBLR+HCbCv+KvSCDu47px80=
-  expiration: 86400000         # 1 day
+  expiration: 3600000 # 1 hour
+  
   refreshExpirationMs: 604800000 # 7 days

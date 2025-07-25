@@ -1,22 +1,18 @@
-package com.mukando.authservice.dto;
-
-import java.time.LocalDateTime;
-
-import org.hibernate.annotations.UpdateTimestamp;
+package com.mukando.commons.exception;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @AllArgsConstructor
-public class MessageResponse {
+public class MessageRes {
     private String message;
 
     private int status;
 
-    @UpdateTimestamp
     @JsonFormat(shape = JsonFormat.Shape.STRING, locale = "en_ZW", pattern = "dd/MM/yyyy HH:mm:sss", timezone = "Africa/Harare")
     private LocalDateTime timestamp;
 
