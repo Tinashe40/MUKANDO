@@ -1,4 +1,4 @@
-package com.mukando.commons.security;
+package com.mukando.authservice.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

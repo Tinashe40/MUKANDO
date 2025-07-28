@@ -20,4 +20,9 @@ public class MessageResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, locale = "en_ZW", pattern = "dd/MM/yyyy HH:mm:sss", timezone = "Africa/Harare")
     private LocalDateTime timestamp;
 
+    public MessageResponse(String message, int status) {
+        this.message = message;
+        this.status = status;
+    }
 }
+

@@ -14,6 +14,10 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MessageRes> handleAccessDeniedException(AccessDeniedException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
     }
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<MessageRes> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<MessageRes> handleBadRequestException(BadRequestException ex) {
