@@ -8,5 +8,5 @@ public enum Role {
     SUPERADMIN,
     TREASURER,
     MEMBER,
-    GUEST
+    GUEST;
 }

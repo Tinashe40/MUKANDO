@@ -1,65 +1,52 @@
 package com.mukando.commons.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
 import java.time.LocalDateTime;
 
-@ControllerAdvice(annotations = {RestController.class, Controller.class})
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
+
+@ControllerAdvice(annotations = RestController.class)
 public class GlobalExceptionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    @ExceptionHandler(AccessDeniedException.class)
-    public ResponseEntity<MessageRes> handleAccessDeniedException(AccessDeniedException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.FORBIDDEN);
+    @ExceptionHandler(UsernameAlreadyExistException.class)
+    public ResponseEntity<MessageRes> handleUsernameAlreadyExist(UsernameAlreadyExistException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(EmailAlreadyExistException.class)
+    public ResponseEntity<MessageRes> handleEmailAlreadyExist(EmailAlreadyExistException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
+    }
+
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<MessageRes> handleResourceNotFoundException(ResourceNotFoundException ex) {
+    public ResponseEntity<MessageRes> handleResourceNotFound(ResourceNotFoundException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(BadRequestException.class)
-    public ResponseEntity<MessageRes> handleBadRequestException(BadRequestException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(InvalidCredentialsException.class)
-    public ResponseEntity<MessageRes> handleInvalidCredentialsException(InvalidCredentialsException ex) {
+    public ResponseEntity<MessageRes> handleInvalidCredentials(InvalidCredentialsException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<MessageRes> handleNotFoundException(NotFoundException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<MessageRes> handleUserNotFoundException(UserNotFoundException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(UsernameAlreadyExistException.class)
-    public ResponseEntity<MessageRes> handleUsernameAlreadyExistException(UsernameAlreadyExistException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.CONFLICT); // Changed from NOT_FOUND to CONFLICT
-    }
-
-    @ExceptionHandler(ValidationException.class)
-    public ResponseEntity<MessageRes> handleValidationException(ValidationException ex) {
-        return buildResponse(ex.getMessage(), HttpStatus.CONFLICT);
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<MessageRes> handleBadRequest(BadRequestException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageRes> handleGenericException(Exception ex) {
-        return buildResponse("An unexpected error occurred: " + ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        logger.error("Unhandled exception occurred", ex);
+        return buildResponse("Internal server error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private ResponseEntity<MessageRes> buildResponse(String message, HttpStatus status) {
-        MessageRes error = new MessageRes(
-                message,
-                status.value(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(error, status);
+        return ResponseEntity.status(status)
+                .body(new MessageRes(message, status.value(), LocalDateTime.now()));
     }
 }

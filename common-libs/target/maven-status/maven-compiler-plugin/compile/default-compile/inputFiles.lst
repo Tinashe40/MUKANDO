@@ -1,5 +1,6 @@
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/exception/AccessDeniedException.java
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/exception/BadRequestException.java
+/home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/exception/EmailAlreadyExistException.java
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/exception/GlobalExceptionHandler.java
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/exception/InvalidCredentialsException.java
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/exception/MessageRes.java
@@ -11,7 +12,3 @@
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/exception/ValidationException.java
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/jpa/BaseDao.java
 /home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/jpa/BaseEntity.java
-/home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/security/CustomUserDetailsService.java
-/home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/security/JwtAuthEntryPoint.java
-/home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/security/JwtAuthFilter.java
-/home/tina/Desktop/MUKANDO/common-libs/src/main/java/com/mukando/commons/security/JwtUtil.java

@@ -4,12 +4,14 @@ import java.util.Set;
 
 import com.mukando.authservice.model.Role;
 
-public record LoginResponse(
+public record UserDetailsResponse(
     String username,
     String email,
-    String message,
-    Set<Role> roles,
     String firstName,
+    String lastName,
     String phoneNumber,
-    String token
+    String address,
+    String city,
+    String country,
+    Set<Role> roles
 ) {}

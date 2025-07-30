@@ -17,7 +17,7 @@ public class MessageResponse {
     private int status;
 
     @UpdateTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, locale = "en_ZW", pattern = "dd/MM/yyyy HH:mm:sss", timezone = "Africa/Harare")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, locale = "en_ZW", pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Africa/Harare")
     private LocalDateTime timestamp;
 
     public MessageResponse(String message, int status) {

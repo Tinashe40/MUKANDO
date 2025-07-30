@@ -1,19 +1,18 @@
 package com.mukando.authservice.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import java.util.Set;
 
-@Data
-@AllArgsConstructor
-public class RegisterResponse {
-    private String username;
-    private String email;
-    private String message;
-    private String role;
-    private String firstName;
-    private String lastName;
-    private String phoneNumber;
-    private String address;
-    private String city;
-    private String country;
-}
+import com.mukando.authservice.model.Role;
+
+public record RegisterResponse(
+    String username,
+    String email,
+    String message,
+    Set<Role> roles,
+    String firstName,
+    String lastName,
+    String phoneNumber,
+    String address,
+    String city,
+    String country
+) {}

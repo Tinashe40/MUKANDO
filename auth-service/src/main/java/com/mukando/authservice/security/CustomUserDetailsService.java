@@ -1,14 +1,14 @@
 package com.mukando.authservice.security;
 
-import com.mukando.authservice.service.AuthService;
-import com.mukando.authservice.service.UserService;
-import com.mukando.commons.exception.NotFoundException;
-import lombok.RequiredArgsConstructor;
-import lombok.val;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import com.mukando.authservice.service.UserService;
+import com.mukando.commons.exception.NotFoundException;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
