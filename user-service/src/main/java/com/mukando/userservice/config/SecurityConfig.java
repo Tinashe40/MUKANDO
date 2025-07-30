@@ -26,13 +26,15 @@ public class SecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/users/register").permitAll()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/api/users/forgot-password").permitAll()
+                .requestMatchers("/api/password/**").permitAll()
                 .requestMatchers("/api/users/reset-password").permitAll()
                 .anyRequest().authenticated()
             );
         return http.build();
-    }
-
+    
+}
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();

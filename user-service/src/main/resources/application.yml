@@ -5,7 +5,7 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/mukando_users
+    url: jdbc:mysql://localhost:3306/mukando_auth
     username: root
     password: sudo0047
     driver-class-name: com.mysql.cj.jdbc.Driver
