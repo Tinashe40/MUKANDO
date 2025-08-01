@@ -27,13 +27,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "mukando_users")
 @Data
+@Setter
+@Getter
 @Builder
-@NoArgsConstructor
+@RequiredArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class User extends BaseEntity implements UserDetails {
@@ -95,5 +99,5 @@ public class User extends BaseEntity implements UserDetails {
     public String getUsername() {
         return username;
     }
-    
+
 }

@@ -38,6 +38,15 @@ public class GlobalExceptionHandler {
     public ResponseEntity<MessageRes> handleBadRequest(BadRequestException ex) {
         return buildResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
     }
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<MessageRes> handleTokenExpired(TokenExpiredException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(TokenNotFoundException.class)
+    public ResponseEntity<MessageRes> handleTokenNotFound(TokenNotFoundException ex) {
+        return buildResponse(ex.getMessage(), HttpStatus.NOT_FOUND);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<MessageRes> handleGenericException(Exception ex) {

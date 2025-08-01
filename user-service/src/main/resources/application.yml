@@ -1,11 +1,26 @@
+app:
+  base-url: http://localhost:8082
+  email:
+    from: no-reply@mukando.com
 server:
   port: 8082
 
 spring:
   application:
     name: user-service
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: tinashemutero40@gmail.com
+    password: iamtimte.29
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
   datasource:
-    url: jdbc:mysql://localhost:3306/mukando_auth
+    url: jdbc:mysql://localhost:3306/mukando_users
     username: root
     password: sudo0047
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -16,6 +31,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+
+  cache:
+    type: caffeine
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
 
 management:
   endpoints:

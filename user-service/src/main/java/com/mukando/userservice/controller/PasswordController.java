@@ -18,22 +18,22 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/password")
 @RequiredArgsConstructor
-@Tag(name = "Password Management", description = "Password reset operations")
+@Tag(name = "Password Management", description = "Endpoints for password reset operations")
 public class PasswordController {
 
     private final PasswordService passwordService;
 
     @Operation(
         summary = "Initiate password reset",
-        description = "Sends a password reset link to the user's email"
+        description = "Request a password reset link to be sent to your email"
     )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "202", description = "Reset initiated"),
+    @ApiResponses({
+        @ApiResponse(responseCode = "202", description = "Password reset initiated"),
         @ApiResponse(responseCode = "404", description = "User not found")
     })
     @PostMapping("/forgot")
     public ResponseEntity<Void> forgotPassword(
-        @Parameter(description = "User's email address") 
+        @Parameter(description = "User's registered email address", required = true)
         @RequestParam String email) {
         passwordService.initiatePasswordReset(email);
         return ResponseEntity.accepted().build();
@@ -41,17 +41,18 @@ public class PasswordController {
 
     @Operation(
         summary = "Complete password reset",
-        description = "Resets password using a valid token"
+        description = "Reset password using a valid token from your email"
     )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Password reset"),
-        @ApiResponse(responseCode = "400", description = "Invalid token")
+    @ApiResponses({
+        @ApiResponse(responseCode = "200", description = "Password reset successful"),
+        @ApiResponse(responseCode = "400", description = "Invalid or expired token"),
+        @ApiResponse(responseCode = "404", description = "Token not found")
     })
     @PostMapping("/reset")
     public ResponseEntity<Void> resetPassword(
-        @Parameter(description = "Password reset token") 
+        @Parameter(description = "Password reset token received via email", required = true)
         @RequestParam String token,
-        @Parameter(description = "New password") 
+        @Parameter(description = "New password for the account", required = true)
         @RequestParam String newPassword) {
         passwordService.completePasswordReset(token, newPassword);
         return ResponseEntity.ok().build();

@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .requestMatchers("/api/users/register").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                 .requestMatchers("/api/users/forgot-password").permitAll()
+                .requestMatchers("/swagger-ui.html").permitAll()
                 .requestMatchers("/api/password/**").permitAll()
                 .requestMatchers("/api/users/reset-password").permitAll()
                 .anyRequest().authenticated()

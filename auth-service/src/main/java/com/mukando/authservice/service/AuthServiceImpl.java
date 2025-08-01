@@ -1,3 +1,4 @@
+// AuthServiceImpl.java
 package com.mukando.authservice.service;
 
 import java.util.Optional;
@@ -95,7 +96,7 @@ public class AuthServiceImpl implements AuthService {
             .map(roles -> roles.stream()
                 .map(role -> Role.valueOf(role.toUpperCase()))
                 .collect(Collectors.toSet()))
-            .orElse(Set.of(Role.USER));
+            .orElse(Set.of(Role.SUPERADMIN));
     }
 
     private RegisterResponse buildRegisterResponse(User user) {
