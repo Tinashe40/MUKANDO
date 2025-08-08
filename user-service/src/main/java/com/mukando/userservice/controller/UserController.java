@@ -1,5 +1,6 @@
 package com.mukando.userservice.controller;
 
+import java.net.URI;
 import java.util.Set;
 
 import org.springframework.data.domain.Page;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.mukando.userservice.dto.ChangePasswordRequest;
 import com.mukando.userservice.model.User;
 import com.mukando.userservice.service.UserService;
 
@@ -43,7 +45,7 @@ public class UserController {
         description = "Create a new user account. Requires ADMIN role."
     )
     @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "User created successfully",
+        @ApiResponse(responseCode = "201", description = "User created successfully",
             content = @Content(mediaType = "application/json", 
             schema = @Schema(implementation = User.class))),
         @ApiResponse(responseCode = "400", description = "Invalid input data"),
@@ -54,7 +56,48 @@ public class UserController {
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(user));
+        User createdUser = userService.createUser(user);
+        return ResponseEntity.created(URI.create("/api/users/" + createdUser.getId()))
+                            .body(createdUser);
+    }
+
+    @Operation(
+        summary = "Internal user registration",
+        description = "Register user via Auth Service. Secured with service authentication."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "201", description = "User registered successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input data"),
+        @ApiResponse(responseCode = "409", description = "User already exists"),
+        @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    @PostMapping("/internal")
+    @PreAuthorize("hasRole('SERVICE')")
+    public ResponseEntity<User> internalCreateUser(@RequestBody User user) {
+        User createdUser = userService.internalCreateUser(user);
+        return ResponseEntity.created(URI.create("/api/users/" + createdUser.getId()))
+                            .body(createdUser);
+    }
+
+    @Operation(
+        summary = "Change user password",
+        description = "Change password for authenticated user. Requires current password."
+    )
+    @ApiResponses({
+        @ApiResponse(responseCode = "204", description = "Password changed successfully"),
+        @ApiResponse(responseCode = "400", description = "Invalid input"),
+        @ApiResponse(responseCode = "404", description = "User not found"),
+        @ApiResponse(responseCode = "403", description = "Insufficient permissions"),
+        @ApiResponse(responseCode = "401", description = "Authentication required")
+    })
+    @PutMapping("/{id}/password")
+    @PreAuthorize("#id == authentication.principal.id")
+    public ResponseEntity<Void> changePassword(
+        @Parameter(description = "ID of the user changing password", required = true)
+        @PathVariable Long id,
+        @RequestBody ChangePasswordRequest request) {
+        userService.changePassword(id, request.currentPassword(), request.newPassword());
+        return ResponseEntity.noContent().build();
     }
 
     @Operation(
@@ -180,27 +223,6 @@ public class UserController {
     }
 
     @Operation(
-        summary = "Change password",
-        description = "Change user password. Users can change their own password."
-    )
-    @ApiResponses({
-        @ApiResponse(responseCode = "200", description = "Password changed successfully"),
-        @ApiResponse(responseCode = "404", description = "User not found"),
-        @ApiResponse(responseCode = "403", description = "Insufficient permissions"),
-        @ApiResponse(responseCode = "401", description = "Authentication required")
-    })
-    @PutMapping("/{id}/password")
-    @PreAuthorize("#id == authentication.principal.id")
-    public ResponseEntity<Void> changePassword(
-        @Parameter(description = "ID of the user changing password", required = true)
-        @PathVariable Long id,
-        @Parameter(description = "New password value", required = true)
-        @RequestBody String newPassword) {
-        userService.changePassword(id, newPassword);
-        return ResponseEntity.ok().build();
-    }
-
-    @Operation(
         summary = "Find user by username",
         description = "Retrieve user details by username. Requires ADMIN role."
     )
@@ -212,7 +234,7 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = "Insufficient permissions"),
         @ApiResponse(responseCode = "401", description = "Authentication required")
     })
-    @GetMapping("/username/{username}")
+    @GetMapping("/by-username/{username}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> findByUsername(
         @Parameter(description = "Username to search for", required = true)
@@ -232,7 +254,7 @@ public class UserController {
         @ApiResponse(responseCode = "403", description = "Insufficient permissions"),
         @ApiResponse(responseCode = "401", description = "Authentication required")
     })
-    @GetMapping("/email/{email}")
+    @GetMapping("/by-email/{email}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<User> findByEmail(
         @Parameter(description = "Email address to search for", required = true)

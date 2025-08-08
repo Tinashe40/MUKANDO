@@ -15,7 +15,7 @@ public interface UserService {
     Page<User> getAllUsers(Pageable pageable);
     User assignRoles(Long userId, Set<String> roles);
     User updateUserStatus(Long userId, boolean enabled);
-    void changePassword(Long userId, String newPassword);
+    void changePassword(Long userId, String currentPassword, String newPassword);
     User findByUsername(String username);
     User findByEmail(String email);
     boolean existsByUsername(String username);
@@ -23,4 +23,5 @@ public interface UserService {
     Set<String> getUserRoles(Long userId);
     boolean isUserEnabled(Long userId);
     boolean isUserAdmin(Long userId);
+    User internalCreateUser(User user);
 }

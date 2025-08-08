@@ -1,4 +1,3 @@
-// AuthService.java
 package com.mukando.authservice.service;
 
 import com.mukando.authservice.dto.LoginRequest;
@@ -11,4 +10,6 @@ public interface AuthService {
     RegisterResponse register(RegisterRequest registerRequest);
     LoginResponse login(LoginRequest loginRequest);
     UserDetailsResponse getCurrentUser(String authHeader);
+    boolean verifyPassword(String username, String password);
+    void updatePassword(String username, String newPassword);
 }
